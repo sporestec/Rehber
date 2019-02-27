@@ -17,7 +17,8 @@ namespace Rehber.Database.Models
                : base(options)
         { }
 
-
+        public DbSet<User> Users { get; set; }
+        public DbSet<Unit> Units { get; set; }
         public class CatalogContextDesignFactory : IDesignTimeDbContextFactory<RehberContext>
         {
             public RehberContext CreateDbContext(string[] args)
@@ -26,7 +27,6 @@ namespace Rehber.Database.Models
                     .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
                     .AddJsonFile("appsettings.json")
                     .Build();
-
                 var optionsBuilder = new DbContextOptionsBuilder<RehberContext>()
                     .UseSqlServer(configuration["ConnectionString"]);
 
