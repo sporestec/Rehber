@@ -1,0 +1,120 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div style="margin-top:5%">
+
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-8 col-xs-offset-2">
+                <div class="input-group">
+                    <div class="input-group-btn search-panel dropdown">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                            <span id="search_concept">All Units</span> <span class="caret"></span>
+                        </button>
+                        <ul id="ddUnits" class="dropdown-menu" role="menu">
+                            <li id="0"><a href="javascript:;">All Units</a></li>
+                        </ul>
+                    </div>
+                    <input type="hidden" name="search_param" value="all" id="search_param">
+                    <input id="searchInput" type="text" class="form-control" name="x" placeholder="Search...">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button"><span class="glyphicon glyphicon-search"></span></button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <table class="table table-striped" style="margin-top:4%">
+        <thead>
+            <tr>
+                <th>Personnel Id</th>
+                <th>First Name</th>
+                <th> Last Name</th>
+                <th> Web Site </th>
+                <th>Email </th>
+                <th>Unit Name</th>
+                <th>Telephone</th>
+                <th> Extra Info </th>
+            </tr>
+        </thead>
+        <tbody id="personnelsTable"></tbody>
+    </table>
+    <h3 style="text-align:center" id="noResult"> No Result.....</h3>
+
+</div>
+
+<script>
+
+    var selectedUnitId = 0;
+
+    document.addEventListener("DOMContentLoaded", function (event) {
+        GetUnits();
+        $("#searchInput").on('keyup', function () {
+            GetPersonnelsByNameAndUnitId($(this).val())
+        })
+    });
+
+    function GetPersonnelsByNameAndUnitId(searchInput) {
+        if (searchInput == null)
+            searchInput = $("#searchInput").val();
+        $('#noResult').text("Loading.....");
+        $('#noResult').show();
+        $.ajax({
+            type: "Get",
+            url: "/Personnels/SearchByNameAndUnitId?name=" + searchInput + "&unitId=" + selectedUnitId,
+            success: function (list) {
+                $('#noResult').hide();
+                var pTable = $("#personnelsTable");
+                pTable.empty();
+                if (list.length == 0) {
+                    $('#noResult').text("No Result.....");
+                    $('#noResult').show();
+                }
+                for (var i = 0; i < list.length; i++) {
+                    var row = "<tr class='row_" + list[i].userId + "'>" +
+                        "<td>" + list[i].userId + "</td>" +
+                        "<td>" + list[i].firstName + "</td>" +
+                        "<td>" + list[i].lastName + "</td>" +
+                        "<td>" + list[i].webSite + "</td>" +
+                        "<td>" + list[i].email + "</td>" +
+                        "<td>" + list[i].unitName + "</td>" +
+                        "<td>" + list[i].telephoneNumber + "</td>" +
+                        "<td>" + list[i].extraInfo + "</td>" +
+                        "</tr>";
+                    pTable.append(row);
+                }
+            },
+            error: function () {
+                $('#noResult').text("Error: GetPersonnels.....");
+                $('#noResult').show();
+            }
+        });
+    }
+
+    function GetUnits() {
+        $.ajax({
+            type: "Get",
+            url: "/Units/Get",
+            success: function (result) {
+                var unitsMenu = $("#ddUnits");
+                result.map(r => unitsMenu.append('<li id="' + r.unitId + '"><a href="javascript:;">' + r.unitName + '<a/></li>'));
+                $('#ddUnits a:empty').remove();
+                $("#ddUnits li").click(function () {
+                    selectedUnitId = $(this).attr("id");
+                    GetPersonnelsByNameAndUnitId(null);
+                    $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="caret"></span>');
+                    $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
+                });
+            },
+            error: function (ex) {
+                alert("Error: GetUnits");
+            }
+        })
+    }
+
+</script>

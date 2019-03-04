@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Views\Shared\" />
+    <ProjectReference Include="..\Rehber.Database\Rehber.Database.csproj" />
   </ItemGroup>
 
   <ItemGroup>
