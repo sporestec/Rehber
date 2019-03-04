@@ -1,0 +1,33 @@
+﻿
+#sidebar ul li.active > a {
+    background-color: white;
+    color: #4463dc;
+}
+#sidebar .sidebar-header {
+    background: #122;
+}
+#sidebar 
+{
+    background:#122;
+}
+.model-s{
+
+   width:900px;
+   
+}
+#select a:hover 
+{
+    background-color:#122;
+    padding-left:50px;
+    color:white;
+    text-decoration:none;
+
+}
+#edtSelect a:hover {
+    background-color: #122;
+    padding-left: 50px;
+    color: white;
+    text-decoration: none;
+
+
+}
